@@ -3,6 +3,7 @@ package com.suraj.employeeapi.EmployeeApiApplication.controller;
 
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeRequestDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeResponseDTO;
+import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeSummaryDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.model.Employee;
 import com.suraj.employeeapi.EmployeeApiApplication.service.EmployeeService;
 
@@ -121,4 +122,50 @@ public class EmployeeController {
         );
     }
 
+
+//    Nested Property Queries & Relationship Queries start
+
+//    @GetMapping("/department/{name}")
+//    public ResponseEntity<List<EmployeeResponseDTO>> gelDepartmentByName(@PathVariable String name){
+//        return ResponseEntity.ok( service.findbyDepartmentName(name));
+//    }
+
+    @GetMapping("/department/{id}")
+    public ResponseEntity<List<EmployeeResponseDTO>> gelDepartmentByName(@PathVariable int id){
+        return ResponseEntity.ok( service.findbyDepartmentId(id));
+    }
+
+
+
+
+//================================JPQL====================================================
+
+
+    @GetMapping("/jpql")
+    public List<Employee> getAllEmployeeJPQL(){
+        return service.getAllEmployeesJPQL();
+    }
+
+    @GetMapping("/jpql/50k")
+    public List<Employee> getEmployeesHavingSalaryGreaterThan50k(){
+
+        return service.getEmployeesHavingSalaryGreaterThan50k();
+    }
+
+    @GetMapping("/jpql/it")
+    public List<Employee> getITEmployees(){
+
+        return service.getAllEmployeesJPQL();
+    }
+
+
+
+//    ======================PROJECTION===========================================
+
+    @GetMapping("/summary")
+    public List<EmployeeSummaryDTO> getSummary(){
+
+        return service.getSummary();
+
+    }
 }

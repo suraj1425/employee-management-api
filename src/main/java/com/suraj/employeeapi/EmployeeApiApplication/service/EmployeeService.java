@@ -6,6 +6,7 @@ import com.suraj.employeeapi.EmployeeApiApplication.Exception.EmployeeNotFoundEx
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeRequestDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeResponseDTO;
 
+import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeSummaryDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.mapper.EmployeeStruckMapper;
 import com.suraj.employeeapi.EmployeeApiApplication.model.Department;
 import com.suraj.employeeapi.EmployeeApiApplication.model.Employee;
@@ -132,6 +133,11 @@ public class EmployeeService {
     // CREATE
     public EmployeeResponseDTO  addEmployee(EmployeeRequestDTO dto){
 
+
+            if(employeeRepository.existsByEmail(dto.getEmail())){
+                throw new RuntimeException("Email already exists");
+            }
+
         // DTO --> Entity
 
         Department department =
@@ -238,5 +244,52 @@ public class EmployeeService {
                 .findByNameContainingIgnoreCase(keyword);
 
     }
+
+
+
+//    Nested Property Queries & Relationship Queries start
+
+    public List<EmployeeResponseDTO> findbyDepartmentName(String name){
+        List<Employee> employees = employeeRepository.findByDepartment_Name(name);
+
+        return employeeStruckMapper.toDTOList(employees);
+    }
+
+    public List<EmployeeResponseDTO> findbyDepartmentId(int id){
+        List<Employee> employees = employeeRepository.findByDepartment_Id(id);
+
+        return employeeStruckMapper.toDTOList(employees);
+    }
+
+
+
+//    ===========================JPQL=========================================
+
+    public List<Employee> getAllEmployeesJPQL(){
+
+        return employeeRepository.getAllEmployeesJPQL();
+    }
+
+    public List<Employee> getEmployeesHavingSalaryGreaterThan50k(){
+
+        return employeeRepository.getEmployeesHavingSalaryGreaterThan50k();
+    }
+
+    public List<Employee> getITEmployees(){
+
+        return employeeRepository.getAllEmployeesJPQL();
+    }
+
+
+
+//    =========================PROJECTION=================================
+
+    public List<EmployeeSummaryDTO> getSummary(){
+
+        return employeeRepository.getEmployeeSummary();
+
+    }
+
+
 
 }

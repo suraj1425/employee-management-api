@@ -1,10 +1,12 @@
 package com.suraj.employeeapi.EmployeeApiApplication.repository;
 
 
+import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeSummaryDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.model.Employee;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -33,8 +35,8 @@ public interface EmployeeRepository
     List<Employee> findByOrderByNameAsc();
 
 
-    @Query("SELECT e FROM Employee e WHERE e.department.name = ?1")
-    List<Employee> findEmployeeByDepartment(String department);
+    @Query("SELECT e FROM Employee e WHERE e.department.name = :departmentName")
+    List<Employee> findEmployeeByDepartment(@Param("departmentName") String departmentName);
 
 
 
@@ -98,9 +100,78 @@ public interface EmployeeRepository
 
     Optional<Employee> findFirstByOrderBySalaryAsc();
 
+    List<Employee> findDistinctByDepartment_Name(String departmentName);
+
+
+//    Nested Property Queries & Relationship Queries start
+
+    List<Employee> findByDepartment_NameIgnoreCase(String name);
+
+    List<Employee> findByDepartment_Id(int id);
+    List<Employee> findByDepartment_Name(String name);
+
+    List<Employee> findByDepartment_NameContaining(String keyword);
+
+    List<Employee> findByDepartment_NameOrderBySalaryDesc(String department);
+
     List<Employee> findTop3ByDepartment_NameOrderBySalaryDesc(String department);
 
-    List<Employee> findDistinctByDepartment_Name(String departmentName);
+    List<Employee> findByDepartment_NameAndSalaryGreaterThan(
+            String department,
+            double salary
+    );
+
+
+    List<Employee> findTop5ByDepartment_NameOrderBySalaryDesc(
+            String department
+    );
+
+
+    boolean existsByEmail(String email);
+
+
+
+
+//    ============================JPQL QUERIES=====================================
+
+    @Query("""
+        SELECT e
+        FROM Employee e
+    """)
+    List<Employee> getAllEmployeesJPQL();
+
+
+    @Query("""
+        SELECT e
+        FROM Employee e
+        WHERE e.salary > 50000
+    """)
+    List<Employee> getEmployeesHavingSalaryGreaterThan50k();
+
+
+    @Query("""
+        SELECT e
+        FROM Employee e
+        WHERE e.department.name = 'IT'
+    """)
+    List<Employee> getITEmployees();
+
+
+
+//    ==================PROJECTION===================================================
+
+
+    @Query("""
+    SELECT NEW
+    com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeSummaryDTO(
+    e.name,
+    e.email,
+    e.salary
+    )
+    FROM Employee e
+    
+""")
+    public List<EmployeeSummaryDTO> getEmployeeSummary();
 
 
 
