@@ -290,6 +290,22 @@ public class EmployeeService {
 
     }
 
+//===============================JOIN===========================================
 
+    public List<Employee> findEmployeesByDepartment(String department){
+
+        return employeeRepository.findEmployeesByDepartment(department);
+
+    }
+
+
+
+//===============================JOIN FETCH===========================================
+
+    public List<Employee> findAllWithDepartment(){
+
+        return employeeRepository.findAllWithDepartment();
+
+    }
 
 }

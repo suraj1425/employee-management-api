@@ -4,7 +4,9 @@ package com.suraj.employeeapi.EmployeeApiApplication.repository;
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeSummaryDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.model.Employee;
 
+import com.suraj.employeeapi.EmployeeApiApplication.projection.EmployeeSalaryProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -16,7 +18,8 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository
-        extends JpaRepository<Employee,Integer>{
+        extends JpaRepository<Employee,Integer>,
+        JpaSpecificationExecutor<Employee> {
 
 
 
@@ -173,6 +176,81 @@ public interface EmployeeRepository
 """)
     public List<EmployeeSummaryDTO> getEmployeeSummary();
 
+
+//===============================JOIN===========================================
+
+    @Query("""
+        SELECT e
+        FROM Employee e
+        JOIN e.department d
+        WHERE d.name = :department
+    """)
+    List<Employee> findEmployeesByDepartment(
+            @Param("department") String department
+    );
+
+
+
+//    ================================JOIN FETCH========================================
+
+    @Query("""
+        SELECT e
+        FROM Employee e
+        JOIN FETCH e.department
+    """)
+    List<Employee> findAllWithDepartment();
+
+
+//    ============================NATIVE QUERY===============================================
+
+
+@Query(value = """
+        SELECT *
+        FROM employees
+        WHERE department_id IN (:ids)
+    """, nativeQuery = true)
+    List<Employee> findByDepartments(@Param("ids") List<Integer> ids);
+
+
+
+
+
+
+
+@Query(value = """
+        SELECT *
+        FROM employees
+        WHERE salary BETWEEN :min AND :max
+    """, nativeQuery = true)
+    List<Employee> findEmployeesBetweenSalary(
+            @Param("min") double min,
+            @Param("max") double max
+    );
+
+
+
+@Query(value = """
+        SELECT *
+        FROM employees
+        WHERE department_id IN (:ids)
+    """, nativeQuery = true)
+    List<Employee> findByDepartmentsNative(@Param("ids") List<Integer> ids);
+
+
+
+
+@Query(value = """
+    SELECT
+        name AS name,
+        salary AS salary
+        FROM employees
+    """, nativeQuery = true)
+    List<EmployeeSalaryProjection> getEmployeeSalary();
+
+
+
+
+//=====================SPECIFICATION==================================
 
 
 

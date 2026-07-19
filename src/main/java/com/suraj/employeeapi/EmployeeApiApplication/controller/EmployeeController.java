@@ -5,6 +5,8 @@ import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeRequestDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeResponseDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.dto.EmployeeSummaryDTO;
 import com.suraj.employeeapi.EmployeeApiApplication.model.Employee;
+import com.suraj.employeeapi.EmployeeApiApplication.projection.EmployeeSalaryProjection;
+import com.suraj.employeeapi.EmployeeApiApplication.repository.EmployeeRepository;
 import com.suraj.employeeapi.EmployeeApiApplication.service.EmployeeService;
 
 import jakarta.validation.Valid;
@@ -21,9 +23,11 @@ public class EmployeeController {
 
 
     private final EmployeeService service;
-    public EmployeeController(EmployeeService service){
+    private final EmployeeRepository employeeRepository;
+    public EmployeeController(EmployeeService service, EmployeeRepository employeeRepository){
 
         this.service = service;
+        this.employeeRepository = employeeRepository;
     }
 
 
@@ -168,4 +172,33 @@ public class EmployeeController {
         return service.getSummary();
 
     }
+
+    //    ======================JOIN===========================================
+
+    @GetMapping("/join")
+    public List<EmployeeSummaryDTO> findEmployeesByDepartment(@RequestParam String department){
+
+        return service.getSummary();
+
+    }
+
+    //    ======================JOIN FETCH===========================================
+
+    @GetMapping("/joinfetch")
+    public List<EmployeeSummaryDTO> findAllWithDepartment(){
+
+        return service.getSummary();
+
+    }
+
+
+
+
+    @GetMapping("/salary")
+    public List<EmployeeSalaryProjection> getEmployeeSalary() {
+        return employeeRepository.getEmployeeSalary();
+    }
+
+
+
 }
